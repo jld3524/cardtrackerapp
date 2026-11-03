@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { mockCards } from "../../data/mockCards";
+import PortfolioChart from "../../components/PortfolioChartContent";
+
 
 export default function CollectionScreen() {
   return (
@@ -12,9 +14,9 @@ export default function CollectionScreen() {
         +124,30 € (+5,37 %)
       </Text>
 
-      <View style={styles.chartPlaceholder}>
-        <Text>Graph kommt später</Text>
-      </View>
+      <PortfolioChart />
+
+     
 
       <Text style={styles.sectionTitle}>Meine Karten</Text>
 
@@ -102,13 +104,7 @@ negativeChange: {
   color: "red",
 },
 
-chartPlaceholder: {
-  height: 220,
-  marginTop: 30,
-  justifyContent: "center",
-  alignItems: "center",
-  borderWidth: 1,
-},
+
 
 sectionTitle: {
   fontSize: 20,
