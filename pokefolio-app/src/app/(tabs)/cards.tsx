@@ -1,3 +1,4 @@
+
 import {
   View,
   Text,
@@ -7,23 +8,42 @@ import {
   FlatList,
   useWindowDimensions,
 } from "react-native";
-import { mockCards } from "../../data/mockCards";
-import { useState } from "react";
 
+import { useState, useEffect } from "react";
+import { getPokemonCards, type PokemonCard } from "../../services/tcgdex";
 
 export default function CardsScreen() {
   const [search, setSearch] = useState("");
+  const [apiCards, setApiCards] = useState<PokemonCard[]>([]);
 
   const { width } = useWindowDimensions();
 
-const columns =
-  width >= 1400 ? 6 :
-  width >= 1100 ? 5 :
-  width >= 800 ? 4 :
-  width >= 600 ? 3 :
-  2;
+  const columns =
+    width >= 1400 ? 6 :
+    width >= 1100 ? 5 :
+    width >= 800 ? 4 :
+    width >= 600 ? 3 :
+    2;
 
-  const filteredCards = mockCards.filter((card) =>
+  // Karten von der API abrufen
+  useEffect(() => {
+    async function loadCards() {
+      try {
+        const cards = await getPokemonCards();
+
+        setApiCards(cards);
+
+        console.log("Geladene Karten:", cards);
+      } catch (error) {
+        console.error("API-Fehler:", error);
+      }
+    }
+
+    loadCards();
+  }, []);
+
+  // Karten nach Suchbegriff filtern
+  const filteredApiCards = apiCards.filter((card) =>
     card.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -39,23 +59,30 @@ const columns =
       />
 
       <FlatList
-  data={filteredCards}
-  numColumns={columns}
-  key={columns}
-  keyExtractor={(card) => card.id}
-  renderItem={({ item: card }) => (
-    <View style={styles.cardContainer}>
-      <Image
-        source={{ uri: card.image }}
-        style={styles.cardImage}
-      />
+        data={filteredApiCards}
+        numColumns={columns}
+        key={columns}
+        keyExtractor={(card) => card.id}
+        renderItem={({ item }) => (
+          <View style={styles.cardContainer}>
+            {item.image ? (
+              <Image
+                source={{ uri: `${item.image}/high.webp` }}
+                style={styles.cardImage}
+                resizeMode="contain"
+              />
+            ) : null}
 
-      <Text style={styles.cardName}>{card.name}</Text>
-      <Text style={styles.cardSet}>{card.set}</Text>
-      <Text style={styles.cardNumber}>{card.number}</Text>
-    </View>
-  )}
-/>
+            <Text style={styles.cardName}>
+              {item.name}
+            </Text>
+
+            <Text style={styles.cardNumber}>
+              #{item.localId}
+            </Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -84,16 +111,16 @@ const styles = StyleSheet.create({
   },
 
   cardContainer: {
-  flex: 1,
-  margin: 8,
-  maxWidth: 220,
-},
+    flex: 1,
+    margin: 8,
+    maxWidth: 220,
+  },
 
-cardImage: {
-  width: "100%",
-  aspectRatio: 0.714,
-  resizeMode: "contain",
-},
+  cardImage: {
+    width: "100%",
+    aspectRatio: 0.714,
+    resizeMode: "contain",
+  },
 
   cardName: {
     fontSize: 16,

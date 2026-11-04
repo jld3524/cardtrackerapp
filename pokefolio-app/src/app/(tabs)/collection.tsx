@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { mockCards } from "../../data/mockCards";
-import PortfolioChart from "../../components/PortfolioChartContent";
+
 
 
 export default function CollectionScreen() {
@@ -14,7 +14,7 @@ export default function CollectionScreen() {
         +124,30 € (+5,37 %)
       </Text>
 
-      <PortfolioChart />
+      
 
      
 
@@ -82,7 +82,7 @@ cardValue: {
   },
 
   title: {
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "600",
   },
 
