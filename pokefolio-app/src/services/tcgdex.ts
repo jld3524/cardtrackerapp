@@ -8,7 +8,7 @@ export type PokemonCard = {
 
 export async function getPokemonCards(): Promise<PokemonCard[]> {
   const response = await fetch(
-    "https://api.tcgdex.net/v2/en/sets/smp"
+    "https://api.tcgdex.net/v2/en/sets/151"
   );
 
   if (!response.ok) {

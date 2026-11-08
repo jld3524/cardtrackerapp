@@ -1,16 +1,9 @@
-
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Image,
-  FlatList,
-  useWindowDimensions,
-} from "react-native";
-
+import {View,Text,TextInput,StyleSheet,Image,FlatList,useWindowDimensions,} from "react-native";
 import { useState, useEffect } from "react";
 import { getPokemonCards, type PokemonCard } from "../../services/tcgdex";
+import { router } from "expo-router";
+import { Pressable } from "react-native";
+
 
 export default function CardsScreen() {
   const [search, setSearch] = useState("");
@@ -22,8 +15,8 @@ export default function CardsScreen() {
     width >= 1400 ? 6 :
     width >= 1100 ? 5 :
     width >= 800 ? 4 :
-    width >= 600 ? 3 :
-    2;
+    width >= 600 ? 4 :
+    4;
 
   // Karten von der API abrufen
   useEffect(() => {
@@ -64,7 +57,13 @@ export default function CardsScreen() {
         key={columns}
         keyExtractor={(card) => card.id}
         renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
+           <Pressable style={styles.cardContainer}
+           onPress={() =>
+  router.push({
+    pathname: "/card/[id]",
+    params: { id: item.id },
+  })
+}>
             {item.image ? (
               <Image
                 source={{ uri: `${item.image}/high.webp` }}
@@ -80,7 +79,8 @@ export default function CardsScreen() {
             <Text style={styles.cardNumber}>
               #{item.localId}
             </Text>
-          </View>
+          
+          </Pressable>
         )}
       />
     </View>
